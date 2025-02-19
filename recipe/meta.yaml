@@ -14,34 +14,39 @@ source:
     - driver.patch      # Fix playwright nodejs location
 
 build:
+  number: 0
   entry_points:
     - playwright=playwright.__main__:main
-  noarch: python
-  script: SETUPTOOLS_SCM_PRETEND_VERSION={{ version }} {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  number: 0
+  script_env:
+    - SETUPTOOLS_SCM_PRETEND_VERSION={{ version }}
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  skip: True  # [py<39]
 
 requirements:
   host:
-    - python {{ python_min }}
-    - setuptools =68.2.2
-    - setuptools-scm =8.0.4
-    - wheel =0.42.0
+    - python
+    - wheel >=0.45.1
+    - setuptools >=75.6.0
+    - setuptools-scm >=8.1.0
     - pip
   run:
-    - python >={{ python_min }}
-    - greenlet =3.1.1
-    - pyee =12.0.0
+    - python
+    - greenlet >=3.1.1,<4.0.0
+    - pyee >=12,<13
     - playwright
 
 test:
   imports:
     - playwright
+    - playwright.sync_api
+    - playwright.async_api
   commands:
     - pip check
     - playwright install --help
+    - playwright --help
+    # Unable to run pytests. The conftest.py import pixelmatch library which is not in main or snowflake channel.
   requires:
     - pip
-    - python {{ python_min }}
 
 about:
   home: https://github.com/Microsoft/playwright-python
