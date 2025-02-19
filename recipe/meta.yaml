@@ -8,6 +8,10 @@ package:
 source:
   url: https://github.com/Microsoft/playwright-python/archive/v{{ version }}.tar.gz
   sha256: 6b9820cc2680902bd6140e05c47dffba234a252d2118d5d22512a2140a4d1905
+  patches:
+    - auditwheel.patch  # auditwheel is only available for linux, so we remove it from the build requirements
+    - setup.patch       # Disable download of binaries
+    - driver.patch      # Fix playwright nodejs location
 
 build:
   number: 0
@@ -21,6 +25,9 @@ build:
   skip: True  # [s390x]
 
 requirements:
+  build:
+    - patch  # [not win]
+    - m2-patch  # [win]
   host:
     - python
     - wheel >=0.45.1
@@ -55,8 +62,8 @@ about:
   description: |
     Playwright is a Python library to automate Chromium, Firefox and WebKit browsers with a single API. 
     Playwright delivers automation that is ever-green, capable, reliable and fast.
-  doc_url: https://github.com/Microsoft/playwright-python
-  dev_url: https://playwright.dev/python/docs/intro
+  dev_url: https://github.com/Microsoft/playwright-python
+  doc_url: https://playwright.dev/python/docs/intro
 
 extra:
   recipe-maintainers:
