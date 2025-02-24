@@ -10,44 +10,60 @@ source:
   sha256: 6b9820cc2680902bd6140e05c47dffba234a252d2118d5d22512a2140a4d1905
   patches:
     - auditwheel.patch  # auditwheel is only available for linux, so we remove it from the build requirements
-    - setup.patch       # Disable download of binaries 
+    - setup.patch       # Disable download of binaries
     - driver.patch      # Fix playwright nodejs location
 
 build:
+  number: 0
   entry_points:
     - playwright=playwright.__main__:main
-  noarch: python
-  script: SETUPTOOLS_SCM_PRETEND_VERSION={{ version }} {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  number: 0
+  script_env:
+    - SETUPTOOLS_SCM_PRETEND_VERSION={{ version }}
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  skip: True  # [py<39]
+  # playwright is not avaliable on linux-s390x
+  skip: True  # [s390x]
 
 requirements:
+  build:
+    - patch  # [not win]
+    - m2-patch  # [win]
   host:
-    - python {{ python_min }}
-    - setuptools =68.2.2
-    - setuptools-scm =8.0.4
-    - wheel =0.42.0
+    - python
+    - wheel >=0.45.1
+    - setuptools >=75.6.0
+    - setuptools-scm >=8.1.0
     - pip
   run:
-    - python >={{ python_min }}
-    - greenlet =3.1.1
-    - pyee =12.0.0
+    - python
+    - greenlet >=3.1.1,<4.0.0
+    - pyee >=12,<13
     - playwright
 
 test:
   imports:
     - playwright
+    - playwright.sync_api
+    - playwright.async_api
   commands:
     - pip check
     - playwright install --help
+    - playwright --help
+    # Unable to run pytests. The conftest.py import pixelmatch library which is not in main or snowflake channel.
   requires:
     - pip
-    - python {{ python_min }}
 
 about:
-  home: https://github.com/Microsoft/playwright-python
+  home: https://playwright.dev/python/
   summary: Python version of the Playwright testing and automation library.
   license: Apache-2.0
+  license_family: Apache
   license_file: LICENSE
+  description: |
+    Playwright is a Python library to automate Chromium, Firefox and WebKit browsers with a single API. 
+    Playwright delivers automation that is ever-green, capable, reliable and fast.
+  dev_url: https://github.com/Microsoft/playwright-python
+  doc_url: https://playwright.dev/python/docs/intro
 
 extra:
   recipe-maintainers:
