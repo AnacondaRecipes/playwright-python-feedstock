@@ -1,13 +1,13 @@
 {% set name = "playwright-python" %}
-{% set version = "1.50.0" %}
+{% set version = "1.62.0" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
   url: https://github.com/Microsoft/playwright-python/archive/v{{ version }}.tar.gz
-  sha256: 6b9820cc2680902bd6140e05c47dffba234a252d2118d5d22512a2140a4d1905
+  sha256: 30cc72a0c00a22c3d287539233d3d6abd579becbfe7d02aef80bd3e75c951455
   patches:
     - auditwheel.patch  # auditwheel is only available for linux, so we remove it from the build requirements
     - setup.patch       # Disable download of binaries
@@ -20,25 +20,21 @@ build:
   script_env:
     - SETUPTOOLS_SCM_PRETEND_VERSION={{ version }}
   script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
-  skip: True  # [py<39]
-  # playwright is not avaliable on linux-s390x
-  skip: True  # [s390x]
+  skip: True  # [py<310]
 
 requirements:
-  build:
-    - patch  # [not win]
-    - m2-patch  # [win]
   host:
     - python
-    - wheel >=0.45.1
-    - setuptools >=75.6.0
-    - setuptools-scm >=8.1.0
+    - wheel >=0.47.0
+    - setuptools >=82.0.1
+    - setuptools-scm >=10.2.1
     - pip
   run:
     - python
     - greenlet >=3.1.1,<4.0.0
-    - pyee >=12,<13
+    - pyee >=13,<14
     - playwright
+    - typing-extensions >=4.16.0
 
 test:
   imports:

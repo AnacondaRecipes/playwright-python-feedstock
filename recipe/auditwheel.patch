@@ -1,20 +1,11 @@
-From 21e69312bc258fb88e1e80eb20b9bb57e55809c6 Mon Sep 17 00:00:00 2001
-From: Jan Janssen <jan-janssen@users.noreply.github.com>
-Date: Sat, 8 Jun 2024 06:26:27 +0200
-Subject: [PATCH] Remove auditwheel
-
----
- pyproject.toml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
 diff --git a/pyproject.toml b/pyproject.toml
-index 2f6801904..5f78797c6 100644
+index a26b944..782b392 100644
 --- a/pyproject.toml
 +++ b/pyproject.toml
 @@ -1,5 +1,5 @@
  [build-system]
--requires = ["setuptools==75.6.0", "setuptools-scm==8.1.0", "wheel==0.45.1", "auditwheel==6.2.0"]
-+requires = ["setuptools==75.6.0", "setuptools-scm==8.1.0", "wheel==0.45.1"]
+-requires = ["setuptools==82.0.1", "setuptools-scm==10.2.1", "wheel==0.47.0", "auditwheel==6.7.0"]
++requires = ["setuptools==82.0.1", "setuptools-scm==10.2.1", "wheel==0.47.0"]
  build-backend = "setuptools.build_meta"
  
  [project]
